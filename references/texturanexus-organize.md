@@ -38,6 +38,7 @@ Area/
 ├── ai/               # 供 llm 使用的文件夹
 │   ├── context/          # 提取过便于 llm 阅读的文件（.txt 或 .md）
 │   ├── ai_outputs/       # llm 输出的未经审核的内容，经仔细审核的放入 resources 文件夹
+│   ├── memo-file_track   # 文件变动与当前文件树（filefollow 初始化时创建）
 │   └── 其余文件夹/         # 按需添加，一般为 ai 的工程文件，统一放在 ai/ 下便于管理
 ├── archives/         # 已归档内容、已结束项目
 ├── originals/        # 原始文件档案源头（如，原始书籍扫描 pdf；像是一个包罗万象的图书馆一样）
@@ -45,13 +46,14 @@ Area/
 ├── assets/           # 以图片为首的固定资源，可能还包括 tikz 代码、svg 等
 ├── resources/        # 常用资源
 ├── 附属项目文件夹、其余文件
+├── AGENTS.md         # 供 AI agent 读取的项目规则（filefollow 初始化时创建）
 ├── README.md         # 如该项目需要分享，则这个文件是给别人读的
 └── ROADMAP.md        # 给自己看的待办事项
 ```
 
 ### 标准 Project 结构（附属项目）
 
-一个附属项目就是一个 Project。附属项目不设立 ai/、archives/、originals/、inbox/ 等部分文件夹，这部分内容应当全部放在附属项目所属的主要项目下，以防止附属项目变得过于臃肿。
+一个附属项目就是一个 Project。附属项目不设立 ai/、archives/、originals/、inbox/ 等部分文件夹，这部分内容应当全部放在附属项目所属的主要项目下，以防止附属项目变得过于臃肿。附属项目的文件变动统一记录在所属主要项目的 `ai/memo-file_track` 中。
 
 ```text
 Project/
@@ -87,7 +89,7 @@ Project/
   - Area 层级：ai/（含 ai/context/、ai/ai_outputs/）、archives/、originals/、inbox/、assets/、resources/
   - Project 层级：assets/、resources/
 - 已存在的同名文件夹一律保留，不重复新建、不覆盖、不删除其中内容
-- 只新建文件夹；README.md、ROADMAP.md 等属于文件，不在自动新建范围内，可在方案中提示用户按需创建
+- 只新建文件夹；README.md、ROADMAP.md、AGENTS.md 等属于文件，不在自动新建范围内，可在方案中提示用户按需创建；其中 `AGENTS.md` 与 `ai/memo-file_track` 由 filefollow 初始化时创建
 - **本步骤不得移动、重命名、删除、修改任何文件**
 
 #### 4. 生成方案
@@ -113,6 +115,7 @@ Project/
 - 用户对方案提出修改意见时，先修改方案并再次展示，直到用户确认
 - 文件夹已在阶段一新建完成；如用户对结构另有要求，先按要求调整文件夹，再移动文件
 - 执行内容：按方案将文件移动到对应文件夹
+- 若项目已初始化 filefollow，移动完成后按 `ai/memo-file_track` 的规则逐文件追加记录，并用新文件树覆盖旧文件树
 - 完成后向用户汇报：移动了哪些文件、最终的目录结构
 
 ## 功能二：内容聚类整理（organize）
@@ -162,6 +165,7 @@ Project/
 - **触发条件**：用户明确表示同意方案（如"按方案整理"、"可以，执行吧"等）
 - 用户对方案提出修改意见时，先修改方案并再次展示，直到用户确认
 - 执行内容：按方案将文件移动到对应文件夹
+- 若项目已初始化 filefollow，移动完成后按 `ai/memo-file_track` 的规则逐文件追加记录，并用新文件树覆盖旧文件树
 - 完成后向用户汇报：移动了哪些文件、最终的目录结构
 
 ## 安全约束（最重要！！）

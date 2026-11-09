@@ -1,11 +1,11 @@
 <h1 align="center">TexturaNexus: Project Structure & Content Organizer</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-0.4.0-blue" alt="version">
-  <img src="https://img.shields.io/badge/update-2026.10.29-green" alt="update">
+  <img src="https://img.shields.io/badge/version-0.5.0-blue" alt="version">
+  <img src="https://img.shields.io/badge/update-2026.11.09-green" alt="update">
 </p>
 
-依据 PARA 思想整理项目文件夹结构与文件归属，对单个文件或选定的多个文件执行保守去重，对指定的大批量 AI 生成 Markdown 做语义压缩，并只读盘点工作区内笔记的成长时期。
+依据 PARA 思想整理项目文件夹结构与文件归属，对单个文件或选定的多个文件执行保守去重，对指定的大批量 AI 生成 Markdown 做语义压缩，并初始化文件追踪记录，维护项目文件树与变动记录。
 
 ## 功能
 
@@ -15,7 +15,7 @@
 | 2 | 内容聚类整理（organize） | 对主要项目下的附属项目与散落文件聚类、分类，重点处理"项目文件夹或其余文件"部分；按逻辑归属、聚类、合理的文件夹嵌套设计结构；输出目标结构树与文件移动对照表，确认后执行移动 | `references/texturanexus-organize.md` |
 | 3 | 内容去重（prune） | 在单个文件内部或选定的多个文件之间识别重复内容；按完全重复、近似重复、包含关系分层判定；阶段一汇报重复组明细与删除方案，不修改文件；阶段二只删除确认过的重复块，保留至少一处，其余内容零改动 | `references/texturanexus-prune.md` |
 | 4 | 内容压缩（compress） | 仅对 AI 生成的大量 Markdown 做语义压缩，通常是 `ai/ai_outputs/` 下尚未审核的长文本；命名规则清晰、内容逻辑清楚、有人工修改审阅痕迹、组织良好的文件默认不处理，用户要求时先询问确认；必须先指定文件与压缩档位（轻度、标准、强力），未指定时先询问；阶段一给出逐节方案，不写文件；阶段二生成压缩版；单文件为 `{原文件名}-压缩版.md`，多文件合并时使用概括名称，原文件只读；代码、公式、表格、数字、引用、`<mark>`、安全警告不压缩 | `references/texturanexus-compress.md` |
-| 5 | 笔记状态追踪（statefollow） | 只读盘点工作区内笔记的成长时期：取根目录文件与 `inbox/`、`resources/`、`context/` 递归子文件夹的并集，`exports/` 与图片文件一律排除；按「序号前缀-文件名-状态后缀」解析，前缀与文件名合成列名；纯中英文翻译视为同列，措辞或拼写不同则分列；行为阶段、列为列名建表，阶段 4 行有元素的列整列忽略，无元素的列全部汇报；没有序号前缀的文件一律归为不规则文件；用 `scripts/file_time.py` 查时间，Markdown 读开头判断归入哪一列，非 Markdown 只报告存在；结果直接在对话中汇报，先报不规则文件再报待推进列，不生成文件 | `references/texturanexus-statefollow.md` |
+| 5 | 文件追踪（filefollow） | 在项目根创建 `AGENTS.md` 与 `ai/memo-file_track`，写入记录规则与空表；每次文件操作前读取 memo 文件树并与实际文件比对，差异补记入表；操作后追加记录并用新文件树覆盖旧文件树；查询时只读 memo 汇报文件位置、状态与变动；已有内容不覆盖，向已有 `AGENTS.md` 追加规则段须确认 | `references/texturanexus-filefollow.md` |
 
 ## 项目组织标准
 
@@ -34,6 +34,7 @@ Area/
 ├── ai/               # 供 llm 使用的文件夹
 │   ├── context/          # 提取过便于 llm 阅读的文件（.txt 或 .md）
 │   ├── ai_outputs/       # llm 输出的未经审核的内容，经仔细审核的放入 resources 文件夹
+│   ├── memo-file_track   # 文件变动与当前文件树（filefollow 初始化时创建）
 │   └── 其余文件夹/         # 按需添加，一般为 ai 的工程文件
 ├── archives/         # 已归档内容、已结束项目
 ├── originals/        # 原始文件档案源头（如原始书籍扫描 pdf）
@@ -41,13 +42,14 @@ Area/
 ├── assets/           # 以图片为首的固定资源，可能还包括 tikz 代码、svg 等
 ├── resources/        # 常用资源
 ├── 附属项目文件夹、其余文件
+├── AGENTS.md         # 供 AI agent 读取的项目规则（filefollow 初始化时创建）
 ├── README.md         # 需要分享时，供他人阅读
 └── ROADMAP.md        # 给自己的待办事项
 ```
 
 ### 标准 Project 结构（附属项目）
 
-附属项目不设立 `ai/`、`archives/`、`originals/`、`inbox/`，这部分内容统一放在所属的主要项目下，避免附属项目过于臃肿。
+附属项目不设立 `ai/`、`archives/`、`originals/`、`inbox/`，这部分内容统一放在所属的主要项目下，避免附属项目过于臃肿。文件变动统一记录在所属主要项目的 `ai/memo-file_track` 中，不为单个附属项目单独维护追踪文件。
 
 ```text
 Project/
@@ -67,7 +69,7 @@ Project/
 
 ### 在对话中激活
 
-对模型说"整理这个文件夹"、"检查项目结构"、"把这个项目下的文件归类"、"删除这两篇笔记里的重复内容"等即可触发对应功能；技能入口与各功能的详细规范见 `SKILL.md` 与 `references/`
+对模型说"整理这个文件夹"、"检查项目结构"、"把这个项目下的文件归类"、"删除这两篇笔记里的重复内容"、"初始化文件追踪"、"查看文件变动记录"等即可触发对应功能；技能入口与各功能的详细规范见 `SKILL.md` 与 `references/`
 
 ### 压缩 AI 生成的大量文本
 
@@ -79,19 +81,15 @@ Project/
 
 三档强度：轻度保留全部章节与例子；标准删除弱例子、长背景和重复总结；强力只保留定义、机制、步骤、数据、警告与引用。
 
-### 追踪笔记整理进度
+### 初始化与查询文件追踪
 
-对模型说“看看哪些笔记还没整理完”或“盘点笔记状态”即可触发 statefollow。技能会读取根目录文件与 `inbox/`、`resources/`、`context/` 下的全部文件，按「序号前缀-文件名-状态后缀」拆解文件名，把「序号前缀-文件名」作为列名，同列的不同稿件落在不同阶段，列内最靠后的阶段即该列的当前阶段。`exports/` 不参与统计，该目录只放成稿的导出副本。
+对模型说“初始化文件追踪”即可。技能会在项目根目录创建或补全 `AGENTS.md` 与 `ai/memo-file_track`，写入记录表与当前文件树。已有内容不覆盖；向已有 `AGENTS.md` 追加规则段前，会先展示内容并征求确认。
 
-所有文件排成一张表后，阶段 4 行有元素的列整列忽略，阶段 4 行没有元素的列全部进入汇报。同一篇笔记一旦有了成稿，同列的提取稿与原始素材随之移出统计。
+初始化后，每次文件操作前，agent 读取 memo 中的文件树并与实际文件比对，发现差异先补记入表；操作完成后追加记录，并用新文件树覆盖旧文件树。
 
-没有序号前缀的文件一律归为不规则文件，与命名不合规的文件一并单列。图片文件不纳入统计。两类不规则文件都提供创建时间、修改时间与归入建议：Markdown 读开头判断应归入哪一列，非 Markdown 只报告存在、不读内容。
+查询时说“某个文件在哪”“查看文件状态”或“查看文件变动记录”，技能读取 memo 汇报当前文件树与最近一次操作，不修改文件。
 
-结果直接在对话中以文字与表格汇报，不生成任何文件。汇报先列不规则文件，再列待推进列；表格的列固定为编号、列名或文件名、所在文件夹、最近修改、下一步，不设停滞天数一列。
-
-### 依赖
-
-`statefollow` 使用 `scripts/file_time.py` 读取文件时间，仅依赖 Python 标准库，无需额外安装。其余功能不包含脚本，全部流程依据 `references/` 中的规范执行。
+`ai/memo-file_track` 保持无扩展名，表头固定，不设时间列，记录先后由表格行的追加顺序体现。文件树默认排除 `.git/`、`local/`、`node_modules/`、隐藏文件夹与符号链接。
 
 ## 安全约束
 
@@ -106,10 +104,10 @@ Project/
 - `compress` 必须先确认具体文件与压缩档位，未指定时先询问
 - `compress` 阶段一不写文件；阶段二只新建压缩版，原文件只读，不覆盖同名文件
 - `compress` 不删除或改写代码、公式、表格、数字、引用、`<mark>`、安全警告
-- `statefollow` 全程只读，不修改、移动、重命名、删除任何被追踪文件
-- `statefollow` 不读取非 Markdown 文件的内容，Markdown 只读开头部分；时间为 `scripts/file_time.py` 的输出
-- `statefollow` 的归类建议与改名建议只是建议，不直接执行
-- `statefollow` 的汇报只在对话中进行，不生成 SVG 或其他文件
+- `filefollow` 初始化只创建 `ai/`、`AGENTS.md`、`ai/memo-file_track`，不覆盖、不删除已有内容；向已有 `AGENTS.md` 追加规则段须经确认
+- `filefollow` 只记录实际发生的文件操作与操作前比对发现的差异，不补写、不推测；仅新建文件夹不记录
+- `filefollow` 的查询汇报只读 memo，不修改文件；文件树与记录表冲突时如实说明
+- `AGENTS.md` 不能保证被所有 agent 软件读取；本技能在已初始化项目中主动执行记录
 
 ## 完整规范
 
@@ -117,4 +115,4 @@ Project/
 - 结构检查与聚类整理：`references/texturanexus-organize.md`
 - 内容去重：`references/texturanexus-prune.md`
 - 内容压缩：`references/texturanexus-compress.md`
-- 笔记状态追踪：`references/texturanexus-statefollow.md`
+- 文件追踪：`references/texturanexus-filefollow.md`
